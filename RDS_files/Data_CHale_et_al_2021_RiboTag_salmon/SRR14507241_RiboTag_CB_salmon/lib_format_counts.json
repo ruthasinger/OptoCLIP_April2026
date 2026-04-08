@@ -1,0 +1,22 @@
+{
+    "read_files": "[ /lustre/fs4/brc/scratch/brc_pipeline/analysis/testBRC_Shiny/SGQTPZIXUYRADBVFHKEJ/workflow_data/FQ/SRR14507241_S1_L001_R1_001.fastq.gz, /lustre/fs4/brc/scratch/brc_pipeline/analysis/testBRC_Shiny/SGQTPZIXUYRADBVFHKEJ/workflow_data/FQ/SRR14507241_S1_L001_R2_001.fastq.gz]",
+    "expected_format": "IU",
+    "compatible_fragment_ratio": 1.0,
+    "num_compatible_fragments": 3339310,
+    "num_assigned_fragments": 3339310,
+    "num_frags_with_concordant_consistent_mappings": 3638463,
+    "num_frags_with_inconsistent_or_orphan_mappings": 213751,
+    "strand_mapping_bias": 0.5005929701635004,
+    "MSF": 0,
+    "OSF": 0,
+    "ISF": 1821389,
+    "MSR": 0,
+    "OSR": 0,
+    "ISR": 1817074,
+    "SF": 99054,
+    "SR": 114697,
+    "MU": 0,
+    "OU": 0,
+    "IU": 0,
+    "U": 0
+}
