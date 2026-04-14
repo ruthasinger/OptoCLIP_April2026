@@ -10,7 +10,7 @@ This repository includes all scripts used to generate the bioinformatic componen
 
 This study implements a multi-modal analysis pipeline integrating FMRP CLIP and RiboTag RNA-seq to investigate activity-dependent RNA regulation in CA1 neurons following optogenetic stimulation.
 
----
+
 
 ## Repository Structure
 ```
@@ -35,7 +35,7 @@ This study implements a multi-modal analysis pipeline integrating FMRP CLIP and 
 ├── RDS_files/
 ```
 
----
+
 
 ## **Figures**
 
@@ -71,7 +71,7 @@ This study implements a multi-modal analysis pipeline integrating FMRP CLIP and 
 
 - **Figure S2C:** Quantification of number of induced action potentials by pA of injected current. Shading indicates +/- SEM from 3 different patched cells. 
 
----
+
 
 ### Figure 3 and Figure S3 — Opto FMRP-CLIP
 
@@ -97,7 +97,7 @@ This study implements a multi-modal analysis pipeline integrating FMRP CLIP and 
 
 - **Figure S3A:** Heatmap of pairwise pearson correlation analysis of each sample compared to every other sample.
 
----
+
 
 ### Figure 4 and Figure S4 — Opto RiboTag
 
@@ -149,7 +149,7 @@ This study implements a multi-modal analysis pipeline integrating FMRP CLIP and 
 
 - **RDS object FMRP_RiboTag_merged:** This RDS object will be used in Figures 5, S5, 6, and S6
 
----
+
 
 ### Figures 5, S5, 6, and S6- FMRP CLIP score and comparison to RiboTag data
 
@@ -198,7 +198,7 @@ shown in 6A and 6B. Output graphs were split in Adobe.Illustrator and aligned ac
 
 - **Figures S6F:** Upset plot showing overlap of transcripts differentially bound by FMRP in different
 
----
+
 
 ## **R_functions**
 
@@ -214,7 +214,7 @@ Reusable analysis functions:
 - **run_limma_CLIPscore.R**
     - limma-based comparison of CLIPscore data across conditions
     
----
+
 
 ## **RDS_files**
 
@@ -238,7 +238,7 @@ Precomputed reference objects and intermediate datasets:
   - Intermediate dataframe created in OptoCLIP_Figure4_FigureS4_Rcode_final.R for simplicity of downstream analyses
   - Used in OptoCLIP_Figure5_FigureS5_Figure6_FigureS6_Rcode_final.RUsed
 
----
+
 
 ## **Contact**
 
