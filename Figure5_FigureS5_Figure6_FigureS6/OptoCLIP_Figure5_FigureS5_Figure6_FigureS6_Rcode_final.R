@@ -1640,7 +1640,7 @@ rownames(Limma_metadata)=Limma_metadata[,1]
 
 CLIPscores_forLimma=CLIPscores_forLimma %>% rownames_to_column("gene_name")
 
-source(file.path("~/ruthasinger_github/OptoCLIP_April2026/R_functions/run_limma_interaction_CLIPscore_v2.R"))
+source(file.path("~/ruthasinger_github/OptoCLIP_April2026/R_functions/run_limma_CLIPscore.R"))
 
 OptoCLIPscores_limma_30v5 <- run_limma_interaction_CLIPscore(
   input_df = CLIPscores_forLimma,

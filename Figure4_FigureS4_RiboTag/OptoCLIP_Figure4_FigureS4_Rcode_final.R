@@ -422,7 +422,7 @@ RT_dds <- DESeqDataSetFromTximport(
 
 RT_dds <- DESeq(RT_dds)
 
-source(file.path("~/ruthasinger_github/OptoCLIP_April2026/R_functions/run_deseq_contrasts_v17.R"))
+source(file.path("~/ruthasinger_github/OptoCLIP_April2026/R_functions/run_deseq_contrasts.R"))
 
 my_comparisons <- data.frame(
   label = c(
@@ -558,7 +558,7 @@ RT_dds <- DESeqDataSetFromTximport(
 
 RT_dds <- DESeq(RT_dds)
 
-source(file.path("~/ruthasinger_github/OptoCLIP_April2026/R_functions/run_deseq_contrasts_v17.R"))
+source(file.path("~/ruthasinger_github/OptoCLIP_April2026/R_functions/run_deseq_contrasts.R"))
 
 # Run DESeq2 contrasts
 RT_LRT_data=run_deseq_contrasts(

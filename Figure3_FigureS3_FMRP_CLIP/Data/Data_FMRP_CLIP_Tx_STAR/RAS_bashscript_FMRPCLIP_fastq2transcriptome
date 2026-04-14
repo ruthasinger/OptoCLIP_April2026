@@ -1,0 +1,136 @@
+#!/bin/bash
+
+#############################################################################################
+# Author: Ruth A Singer
+# Email: rsinger01@rockefeller.edu
+#based on CTK pipeline
+#Shah,A., Qian,Y., Weyn-Vanhentenryck,S.M., Zhang,C. 2017.
+
+#############################################################################################
+# requirements: 
+#czplib (perl): a perl library with various functions for genomic/bioinformatic analysis
+#CTK (perl): the core algorithm.
+#FASTX Tool-Kit Version 0.0.13: http://hannonlab.cshl.edu/fastx_toolkit/download.html
+#cutadapt Version 1.14: https://pypi.python.org/pypi/cutadapt/ (an alternative to FASTX Tool-Kit)
+#STAR functions and a custom STAR transcriptome index
+#Samtools Version 1.3.1: http://samtools.sourceforge.net
+#Perl Version 5.14.3 https://www.perl.org/get.html
+#Perl library Math::CDF Version 0.1: http://search.cpan.org/~callahan/Math-CDF-0.1/CDF.pm
+
+#############################################################################################
+#current usage: bash RAS_bashscript_FMRPCLIP_fastq2transcriptome . "/Volumes/RS_Darnell_Lab/Indexes/STAR_mm10_BRC"
+
+#############################################################################################
+#define variables you need before creating logfile
+
+SCRIPT=$0
+DATA_DIR=$1
+LOG_FILE=${DATA_DIR}/${LOG_FILE_START_TIME}_CLIPpipeline.log
+
+#############################################################################################
+exec > >(tee ${LOG_FILE}) 2>&1
+
+echo "**********************************************************************"
+echo "         RAS Pipeline for Mapping FMRP CLIP tags to Transcriptome	    "
+echo "             Updated 04-13-2026, Ruth A. Singer, PhD		    	    "
+echo "**********************************************************************"
+
+#Get current time
+PipelineStartTime=$(date '+%Y-%m-%d %T')
+echo "Script starting date and time is $PipelineStartTime"
+
+#############################################################################################
+#set variables and make directories
+source /Users/ruthsinger/Coding/Programs/CLIP_programs/RAS_CLIP_env.sh
+
+echo "Script name is $SCRIPT"
+
+PATH2STARINDEX=$2
+
+echo "PATH2STARINDEX is $PATH2STARINDEX"
+
+SRCDIR="/Users/ruthsinger/Coding/Programs/ctk/v1.1.3/ctk-1.1.3"
+DEMULTI_OUT="${DATA_DIR}/demulti"
+LEN_UMI=7 #this number is the UMI
+LEN_INDEX_DDD=9 #this number is the 6 nucleotide index + 3 nucleotide degenerate barcode (DDD)
+FILTERED_OUT="${DATA_DIR}/filtered"
+RM3LINK_OUT="${DATA_DIR}/rm3link"
+COLLAPSE_OUT="${DATA_DIR}/collapsed"
+RM5LINK_OUT="${DATA_DIR}/rm5link"
+PREMAP_OUT="${DATA_DIR}/premap"
+STAR_OUT="${DATA_DIR}/STAR_out"
+BED_OUT="${DATA_DIR}/bed_out"
+
+mkdir -p ${FILTERED_OUT}
+mkdir -p ${RM3LINK_OUT}
+mkdir -p ${COLLAPSE_OUT}
+mkdir -p ${RM5LINK_OUT}
+mkdir -p ${PREMAP_OUT} 
+mkdir -p ${STAR_OUT}
+mkdir -p ${BED_OUT} 
+
+numfastqs=$(ls demulti | wc -l)
+
+echo "Running pipeline on $numfastqs samples" 
+
+#############################################################################################
+#preprocessing the fastq files
+#includes steps for: 
+	#filter fastq files by read quality (we require a min score >= 20 at the index/barcode nt and an avg score >= 20 for the next 25 nt corresponding to the first 25-nt of the actual CLIP tags)
+	#Remove 3' linker (GTGTCAGTCACTTCCAGCGG) and any reads shorter than 20 nt
+	#Collapse exact duplicates: If multiple reads have exactly the same sequence, only one is kept.
+	#Remove 5' linker including index and 3 extra nucleotides (DDD) (9 nt total)
+	#Filter for reads less than 17 nt for mapping
+
+for file in ${DEMULTI_OUT}/*.demulti.fastq ; do
+	sample=$(basename $file | cut -f 1 -d ".")
+		echo "Starting preprocessing pipeline for $sample"
+		echo "Filtering for read quality $sample"
+	perl $SRCDIR/fastq_filter.pl -v -f min:0-15:20,mean:16-39:20 -of fastq $file ${FILTERED_OUT}/${sample}.filtered.fastq 
+   		filterreads=$(wc -l ${FILTERED_OUT}/${sample}.filtered.fastq | awk '{print $1;}')
+		echo "$sample has $((filterreads/4)) filtered_reads"
+		echo "trimming the 3' linker for $sample"
+	cutadapt -m 20 -a GTGTCAGTCACTTCCAGCGG -o ${RM3LINK_OUT}/$sample.filtered.rm3link.fastq ${FILTERED_OUT}/${sample}.filtered.fastq 
+   	  	trimmedthreereads=$(wc -l ${RM3LINK_OUT}/$sample.filtered.rm3link.fastq | awk '{print $1;}')
+		echo "$sample has $((trimmedthreereads/4)) rm3link_reads"
+		echo "collapsing reads for $sample"
+	perl $SRCDIR/fastq2collapse.pl -v ${RM3LINK_OUT}/$sample.filtered.rm3link.fastq ${COLLAPSE_OUT}/${sample}.filter.rm3link.collapse.fastq
+		collapsedreads=$(wc -l ${COLLAPSE_OUT}/${sample}.filter.rm3link.collapse.fastq | awk '{print $1;}')
+		echo "$sample has $((collapsedreads/4)) collapsed_reads" 
+		echo "trimming the 5' barcode linker sequence for $sample"
+	perl $SRCDIR/stripBarcode.pl -len $LEN_INDEX_DDD -format fastq ${COLLAPSE_OUT}/${sample}.filter.rm3link.collapse.fastq ${RM5LINK_OUT}/${sample}.filter.rm3link.collapse.rm5link.fastq
+	cutadapt -m 17 -o ${PREMAP_OUT}/$sample.filter.rm3link.collapse.rm5link.trim.fastq ${RM5LINK_OUT}/${sample}.filter.rm3link.collapse.rm5link.fastq
+		premapreads=$(wc -l ${PREMAP_OUT}/$sample.filter.rm3link.collapse.rm5link.trim.fastq | awk '{print $1;}')
+		echo "$sample has $((premapreads/4)) premap_reads" 
+done	
+
+
+#############################################################################################
+#mapping 
+#includes steps for:
+	#mapping $sample.filter.rm3link.collapse.rm5link.trim.fastq to the transcriptome with STAR
+	#converting those BAMs to beds
+	#collapsing PCR duplicates to get .transcriptome.unique.bed files
+
+for file in ${PREMAP_OUT}/*.filter.rm3link.collapse.rm5link.trim.fastq ; do
+	sample=$(basename $file | cut -f 1 -d ".")
+	echo "Starting STAR mapping for $sample"
+	STAR --runThreadN 4 --quantMode GeneCounts TranscriptomeSAM --outSAMtype SAM --outFilterMultimapNmax 10  --genomeDir $PATH2STARINDEX/ --readFilesIn $file --outFileNamePrefix ${STAR_OUT}/${sample}.
+	echo "Filtering for only unique mapping reads in $sample"
+	samtools view -bq 1  ${STAR_OUT}/${sample}.Aligned.toTranscriptome.out.bam > STAR_out/${sample}.uniquemapping.bam
+	echo "Converting BAM to bed for $sample"
+	bamToBed -i ${STAR_OUT}/${sample}.uniquemapping.bam -split > ${BED_OUT}/${sample}.transcriptome.bed
+	echo "Collapsing PCR duplicates in bed file for $sample"
+	perl $SRCDIR/tag2collapse.pl  -v -EM 30 -random-barcode --seq-error-model em-local --weight-in-name --keep-max-score --keep-tag-name ${BED_OUT}/${sample}.transcriptome.bed ${BED_OUT}/${sample}.transcriptome.unique.bed
+done
+
+#############################################################################################
+echo "Time script started: $PipelineStartTime"
+#Get current time
+PipelineEndTime=$(date '+%Y-%m-%d %T')
+echo "Time script ended: $PipelineEndTime"
+Pipelinediff=$(datediff  -f "%H:%M:%S" "$PipelineStartTime" "$PipelineEndTime")
+echo "Script took $Pipelinediff (H:M:S) to run"
+echo "**********************************************************************"
+echo "  End of the RAS Pipeline for Mapping FMRP CLIP tags to Transcriptome "
+echo "**********************************************************************"

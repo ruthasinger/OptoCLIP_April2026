@@ -140,11 +140,11 @@ get_rheobase_for_cell <- function(FI_df) {
 }
 
 donor_abf <- file.path(Data_directory, "CurrentClamp",
-                       "08112021_Camk2a_ChR2_Cell1_cc200pA.abf")
+                       "CC_Camk2a_ChR2_Cell1_cc200pA.abf")
 
 other_vm_only <- c(
-  "optoCamK2a_Aug11_cc200pAsweep.abf",
-  "optoCamK2a_Aug11_cc200pAsweep_postLED.abf"
+  "CC_Camk2a_ChR2_Cell2_cc200pA.abf",
+  "CC_Camk2a_ChR2_Cell3_cc200pA.abf"
 )
 
 other_vm_only <- file.path(Data_directory, "CurrentClamp", other_vm_only)
@@ -267,7 +267,7 @@ plot_Vm_one_cell <- function(abf_path, sweep_pA_map,
     ))
   print(Vm_plot)
   ggsave(
-    filename = file.path(Outdirectory, "Vm_plot_08112021_Camk2a_ChR2_Cell1_cc200pA_scale_100ms_10mV.pdf"),
+    filename = file.path(Outdirectory, "Vm_plot_CC_Camk2a_ChR2_Cell1_cc200pA_scale_100ms_10mV.pdf"),
     plot = Vm_plot, device = "pdf", width = 5, height = 4, units = "in"
   )
   
@@ -313,7 +313,7 @@ plot_pA_one_cell <- function(abf_path,
   
   print(pA_plot)
   ggsave(
-    filename = file.path(Outdirectory, "pA_plot_08112021_Camk2a_ChR2_Cell1_cc200pA_scale_100ms_25pA.pdf"),
+    filename = file.path(Outdirectory, "pA_plot_CC_Camk2a_ChR2_Cell1_cc200pA_scale_100ms_25pA.pdf"),
     plot = pA_plot, device = "pdf", width = 5, height = 4, units = "in"
   )
   
@@ -352,23 +352,23 @@ read_abf_trace <- function(abf_file, value_name, channel = 1, gain_divide = 1, n
 
 # Control files
 LED_1Hz_Control <- read_abf_trace(
-  file.path(Data_directory, "DifferentHz", "020222_Patch_Control_1Hz_bluelight.abf"),
+  file.path(Data_directory, "DifferentHz", "Patch_Control_1Hz_bluelight.abf"),
   "LED_1Hz_Control"
 )
 
 LED_5Hz_Control <- read_abf_trace(
-  file.path(Data_directory, "DifferentHz", "020222_Patch_Control_5Hz_bluelight.abf"),
+  file.path(Data_directory, "DifferentHz", "Patch_Control_5Hz_bluelight.abf"),
   "LED_5Hz_Control"
 )
 
 LED_10Hz_Control <- read_abf_trace(
-  file.path(Data_directory, "DifferentHz", "020222_Patch_Control_10Hz_bluelight.abf"),
+  file.path(Data_directory, "DifferentHz", "Patch_Control_10Hz_bluelight.abf"),
   "LED_10Hz_Control"
 )
 
 # ChR2 files
 LED_1Hz_ChR2 <- read_abf_trace(
-  file.path(Data_directory, "DifferentHz", "033123_Patch_ChR2_1Hz_bluelight.abf"),
+  file.path(Data_directory, "DifferentHz", "Patch_ChR2_1Hz_bluelight.abf"),
   "LED_1Hz_ChR2",
   channel = 1,
   gain_divide = 20,
@@ -376,7 +376,7 @@ LED_1Hz_ChR2 <- read_abf_trace(
 )
 
 LED_5Hz_ChR2 <- read_abf_trace(
-  file.path(Data_directory, "DifferentHz", "033123_Patch_ChR2_5Hz_bluelight.abf"),
+  file.path(Data_directory, "DifferentHz", "Patch_ChR2_5Hz_bluelight.abf"),
   "LED_5Hz_ChR2",
   channel = 1,
   gain_divide = 20,
@@ -384,7 +384,7 @@ LED_5Hz_ChR2 <- read_abf_trace(
 )
 
 LED_10Hz_ChR2 <- read_abf_trace(
-  file.path(Data_directory, "DifferentHz", "033123_Patch_ChR2_10Hz_bluelight.abf"),
+  file.path(Data_directory, "DifferentHz", "Patch_ChR2_10Hz_bluelight.abf"),
   "LED_10Hz_ChR2",
   channel = 1,
   gain_divide = 20,
@@ -397,7 +397,6 @@ segment_data1hz = data.frame(
   xend=seq(1.25,20,2),
   y = -75,
   yend = -72)
-nrow(segment_data1hz)
 
 OneHz_plot=ggplot() +
   geom_line(data = LED_1Hz_ChR2, aes(x = Time, y = LED_1Hz_ChR2, color = "ChR2"), linewidth=.5) +
@@ -504,14 +503,14 @@ TenHz_plot_zoom
 ggsave(filename = file.path(Outdirectory,"LED_10Hz_ChR2andControl_scale_100ms_10mV_zoom_4to6.pdf"), plot= TenHz_plot_zoom, device='pdf', width=1.7,height=2.25,unit="in")
 
 ##############################################################################################################
-#showing spiking with Opto-CLIP paradigm- 5 trains of 30" light on (5 Hz pulses), 30" light off
+#showing spiking with Opto CLIP paradigm- 5 trains of 30" light on (5 Hz pulses), 30" light off
 
 abf_files <- c(
-  "042325_ChR2_Neuron_1.abf",
-  "042325_ChR2_Neuron_2.abf",
-  "042325_ChR2_Neuron_3.abf",
-  "042325_Control_Neuron_1.abf",
-  "042325_Control_Neuron_2.abf"
+  "Patch_ChR2_Neuron_1_5Hz_5X.abf",
+  "Patch_ChR2_Neuron_2_5Hz_5X.abf",
+  "Patch_ChR2_Neuron_3_5Hz_5X.abf",
+  "Patch_Control_Neuron_1_5Hz_5X.abf",
+  "Patch_Control_Neuron_2_5Hz_5X.abf"
 )
 
 labels <- sub("\\.abf$", "", abf_files)
@@ -540,8 +539,8 @@ Neuron_Data <- Map(function(df, name) {
 
 all_neurons_df <- do.call(rbind, Neuron_Data)
 
-neurons_to_plot <- c("042325_ChR2_Neuron_3",
-                     "042325_Control_Neuron_2") 
+neurons_to_plot <- c("Patch_ChR2_Neuron_3_5Hz_5X",
+                     "Patch_Control_Neuron_2_5Hz_5X") 
 
 plot_df <- all_neurons_df %>%
   filter(Neuron %in% neurons_to_plot, Sweep %in% 1:5) %>%
@@ -633,16 +632,7 @@ FiveHz_FiveTrain_plot
 ggsave(filename = file.path(Outdirectory,"FiveHz_FiveTrain_plot_scale_1s_10mV.png"), plot= FiveHz_FiveTrain_plot, device='png', dpi = 600, width=7, height=3.5)
 
 ###########################
-#making summary plot
-abf_files <- c(
-  "042325_ChR2_Neuron_1.abf",
-  "042325_ChR2_Neuron_2.abf",
-  "042325_ChR2_Neuron_3.abf",
-  "042325_Control_Neuron_1.abf",
-  "042325_Control_Neuron_2.abf"
-)
-
-labels <- sub("\\.abf$", "", abf_files)
+#make summary plot
 
 read_all_sweeps <- function(filename) {
   abf <- readABF(file.path(Data_directory, "5trains5Hz",filename))
@@ -819,6 +809,5 @@ p_side_by_side_bar <- ggplot(fr_long, aes(x = Condition, y = FR_Hz, fill = Condi
     strip.text = element_text(face = "bold"),
     legend.position = "none"
   )
-
 p_side_by_side_bar
 ggsave(filename = file.path(Outdirectory,"FiveHz_FiveTrain_Hz_Allneurons.pdf"), plot= p_side_by_side_bar, device='pdf', width=5, height=7)
