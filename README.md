@@ -123,7 +123,11 @@ This study implements a multi-modal analysis pipeline integrating FMRP CLIP and 
 
   - **Data_30min**
 
-    This folder contains 16 folders with nested quant.sf files output from salmon transcriptome mapping of just the IP samples for all timepoints. Code for generating these quant.sf files from raw, paired-end fastq files (found on GEO: GSE286381) can be found in Data_RiboTag/RAS_fastq2salmon.R
+    This folder contains 16 folders with nested quant.sf files output from salmon transcriptome mapping of just the IP samples for all timepoints. 
+    
+    Code for generating these quant.sf files from raw, paired-end fastq files (found on GEO: GSE286381) can be found in Data_RiboTag/RAS_fastq2salmon.R.
+    
+    The docker containing all software details used in this fastq2salmon pipeline can be found here https://hub.docker.com/r/rubrc/brcpipeline_r4.1.2_base. This platform was developed and executed by The Rockefeller University's Bioinformatics Resource Center (https://www.rockefeller.edu/bioinformatics/)
 
 - **RDS files**
 
