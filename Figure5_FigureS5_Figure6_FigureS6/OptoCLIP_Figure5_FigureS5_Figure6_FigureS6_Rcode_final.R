@@ -10,7 +10,7 @@ library(VennDetail)
 
 ##############################################################################################################
 #setup the directories
-Base_directory=file.path("~/Dropbox (Personal)/Darnell_lab/optoCLIP/OptoCLIP_manuscript/Neuron/Raw_data_for_paper/Code_and_data/Figure5_FigureS5_Figure6_FigureS6")
+Base_directory=file.path("~/ruthasinger_github/OptoCLIP_April2026/Figure5_FigureS5_Figure6_FigureS6")
 list.files(Base_directory)
 
 Outdirectory=file.path(Base_directory,paste("Output",Sys.Date(),sep="_"))
