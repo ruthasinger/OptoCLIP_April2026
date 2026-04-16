@@ -19,7 +19,7 @@ dir.create(Outdirectory,showWarnings = TRUE)
 ##############################################################################################################
 #code for how CH_RT_resdata was made is in the "RDS_files" folder in this github repository
 
-CH_RT_resdata=readRDS(file.path("~/ruthasinger_github/OptoCLIP_April2026/RDS_files/Data_CHale_et_al_2021_RiboTag_salmon/CH_RT_resdata.rds"))
+CH_RT_resdata=readRDS(file.path("~/ruthasinger_github/OptoCLIP_April2026/RDS_files/CH_RT_resdata.rds"))
 
 #code for making FMRP_RiboTag_merged is in the following script: OptoCLIP_Figure4_FigureS4_Rcode_final.R in this github repository
 

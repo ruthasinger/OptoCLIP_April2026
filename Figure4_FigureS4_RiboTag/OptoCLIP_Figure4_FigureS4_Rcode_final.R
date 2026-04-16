@@ -28,9 +28,9 @@ dir.create(Outdirectory,showWarnings = TRUE)
 ##############################################################################################################
 #code for how I made these RDS files are in the "RDS_files" folder in this github repository
 
-mm10_Tx_final <- readRDS(file.path("~/ruthasinger_github/OptoCLIP_April2026/RDS_files/Data_mm10gtf/mm10_Tx_final.rds"))
-mm10_txdb_lengths <- readRDS(file.path("~/ruthasinger_github/OptoCLIP_April2026/RDS_files/Data_mm10gtf/mm10_txdb_lengths.rds"))
-CH_RT_resdata=readRDS(file.path("~/ruthasinger_github/OptoCLIP_April2026/RDS_files/Data_CHale_et_al_2021_RiboTag_salmon/CH_RT_resdata.rds"))
+mm10_Tx_final <- readRDS(file.path("~/ruthasinger_github/OptoCLIP_April2026/RDS_files/mm10_Tx_final.rds"))
+mm10_txdb_lengths <- readRDS(file.path("~/ruthasinger_github/OptoCLIP_April2026/RDS_files/mm10_txdb_lengths.rds"))
+CH_RT_resdata=readRDS(file.path("~/ruthasinger_github/OptoCLIP_April2026/RDS_files/CH_RT_resdata.rds"))
 
 ##############################################################################################################
 
